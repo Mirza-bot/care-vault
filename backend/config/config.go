@@ -1,9 +1,10 @@
 package config
 
 import (
+	"care-vault/controllers"
+	"care-vault/models"
 	"fmt"
 	"log"
-	"care-vault/models"
 
 	"github.com/spf13/viper"
 	"gorm.io/driver/postgres"
@@ -34,6 +35,7 @@ func ConnectDatabase() {
     fmt.Println("Connected to PostgreSQL!")
 
     Migrate(DB)
+    controllers.SetDB(DB)
 }
 
 

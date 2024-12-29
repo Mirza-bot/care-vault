@@ -1,9 +1,7 @@
-package models
+package userdtos
 
-type User struct {
+type BaseUserDto struct {
     ID uint `json:"id" gorm:"primaryKey"`
     Name string `json:"name"`
     Email string `json:"email" gorm:"unique"`
-    Password string `json:"-"`
-    Created string `json:"created"`
 }
