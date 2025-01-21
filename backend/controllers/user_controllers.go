@@ -1,9 +1,9 @@
 package controllers
 
 import (
-	"log"
 	"net/http"
 	"strconv"
+	"time"
 
 	userdtos "care-vault/dtos/user_dtos"
 	"care-vault/models"
@@ -16,7 +16,6 @@ import (
 
 func GetUser(c *gin.Context) {
     var userId = c.Param("id")
-    log.Printf("the userId is %v", userId)
     id, err := strconv.Atoi(userId)
     if err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID format"})
@@ -39,25 +38,30 @@ func GetUser(c *gin.Context) {
 
 
 func CreateUser(c *gin.Context) {
-    var userDto userdtos.UserCreateDto
+    var userDto userdtos.UserPublicDto
 
     if err := c.ShouldBindJSON(&userDto); err != nil {
         c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
         return
     }
 
+    var exsistingUser models.User
+    if err := db.Where("email = ?", userDto.Email).First(&exsistingUser).Error; err == nil {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "E-Mail is already in use."})
+        return
+    }
+
     if userDto.Name == "" {
         c.JSON(http.StatusBadRequest, gin.H{"error": "A name is required"})
+        return
     }
 
     user := models.User{
         Name: userDto.Name,
         Email: userDto.Email,
-        // TODO: Create a HashPassword-function to hash the password here
-        Password: userDto.Password,
+        Created: time.Now(),
     }
 
-    // TODO: Make sure to log properly if the user could not be created because the email is already used
     if err := db.Create(&user).Error; err != nil {
         c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create user"})
         return
@@ -108,12 +112,7 @@ func ModifyUser(c *gin.Context) {
         return
     }
 
-    if userDto.Email == "" {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "E-Mail is required"})
-        return
-    }
-
-    if utils.IsValidEmail(userDto.Email) {
+    if !utils.IsValidEmail(userDto.Email) {
         c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email adress"})
         return
     }
