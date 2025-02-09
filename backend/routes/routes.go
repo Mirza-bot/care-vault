@@ -3,8 +3,11 @@ package routes
 import (
 	"care-vault/controllers"
 	"log"
+    _ "care-vault/docs"
 
 	"github.com/gin-gonic/gin"
+    "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/files"
 )
 
 func SetupAuthRoutes(router *gin.Engine) {
@@ -56,7 +59,10 @@ func SetupCompanyRoutes(router *gin.Engine) {
     }
 }
 
+
 func SetupRoutes(router *gin.Engine) {
+    router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
 	log.Println("Setting up routes...")
     SetupAuthRoutes(router)
     SetupUserRoutes(router)

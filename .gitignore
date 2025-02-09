@@ -32,3 +32,6 @@ certs/*.crt
 # Ignore the Air temp files
 tmp/
 
+# Mac specific
+.DS_Store
+
