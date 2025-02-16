@@ -1,5 +1,4 @@
-# Use Node.js as the base image
-FROM node:18
+FROM node:20-alpine AS build
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -7,14 +6,21 @@ WORKDIR /app
 # Copy package.json and package-lock.json before installing dependencies
 COPY package.json package-lock.json ./
 
-# Install dependencies
 RUN npm install
+
+# # Generate OpenApi files
+# RUN openapi-typescript-codegen --input http://backend:8080/swagger/doc.json --output ./src/app/api
 
 # Copy the entire Angular app into the container
 COPY . .
+RUN npm run build -- --configuration=production
 
-# Expose the Angular development server port
+FROM nginx:alpine
+
+COPY --from=build /app/dist/frontend /usr/share/nginx/html
+
+# COPY nginx.conf /etc/nginx/nginx.conf
+
 EXPOSE 4200
 
-# Start the Angular app in development mode
-CMD ["npm", "run", "start"]
+CMD ["nginx", "-g", "daemon off;"]

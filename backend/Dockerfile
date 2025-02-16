@@ -11,6 +11,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+# Install swagger
+RUN go install github.com/swaggo/swag/cmd/swag@latest
+
 # Copy the rest of the source code
 COPY . .
 

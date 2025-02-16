@@ -1,4 +1,92 @@
+definitions:
+  care-vault_dtos_user_dtos.UserPublicDto:
+    properties:
+      email:
+        type: string
+      firstName:
+        type: string
+      id:
+        type: integer
+      isAccount:
+        type: boolean
+      lastName:
+        type: string
+    type: object
+  models.User:
+    properties:
+      created:
+        type: string
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      role:
+        type: string
+    type: object
 info:
   contact: {}
-paths: {}
+paths:
+  /user:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with the provided name and email. Ensures the
+        email is unique.
+      parameters:
+      - description: User data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/care-vault_dtos_user_dtos.UserPublicDto'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid input or email already in use
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Could not create user
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new user
+      tags:
+      - user
+  /user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get detailed information about a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved user
+          schema:
+            $ref: '#/definitions/models.User'
+        "400":
+          description: Invalid ID format
+        "404":
+          description: Database query failed
+      summary: Get a user by ID
+      tags:
+      - user
 swagger: "2.0"

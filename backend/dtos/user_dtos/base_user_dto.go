@@ -2,7 +2,8 @@ package userdtos
 
 type BaseUserDto struct {
     ID uint `json:"id" gorm:"primaryKey"`
-    Name string `json:"name"`
+    FirstName string `json:"firstName"`
+    LastName string `json:"lastName"`
     Email string `json:"email" gorm:"unique"`
     IsAccount bool `json:"isAccount"`
 }

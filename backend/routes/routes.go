@@ -63,6 +63,7 @@ func SetupCompanyRoutes(router *gin.Engine) {
 func SetupRoutes(router *gin.Engine) {
     router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
+
 	log.Println("Setting up routes...")
     SetupAuthRoutes(router)
     SetupUserRoutes(router)

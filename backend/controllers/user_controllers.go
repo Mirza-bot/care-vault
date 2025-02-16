@@ -14,6 +14,17 @@ import (
 )
 
 
+// @Summary Get a user by ID
+// @Description Get detailed information about a user
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param   id  path  int  true  "User ID"
+// @Success 200 {object} models.User "Successfully retrieved user"
+// @Failure 400 "Invalid ID format"
+// @Failure 404 "User not found"
+// @Failure 404 "Database query failed"
+// @Router /user/{id} [get]
 func GetUser(c *gin.Context) {
     var userId = c.Param("id")
     id, err := strconv.Atoi(userId)
@@ -37,6 +48,17 @@ func GetUser(c *gin.Context) {
 }
 
 
+
+// @Summary Create a new user
+// @Description Creates a new user with the provided name and email. Ensures the email is unique.
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param   user  body  userdtos.UserPublicDto  true  "User data"
+// @Success 200 {object} map[string]interface{} "User created successfully"
+// @Failure 400 {object} map[string]string "Invalid input or email already in use"
+// @Failure 500 {object} map[string]string "Could not create user"
+// @Router /user [post]
 func CreateUser(c *gin.Context) {
     var userDto userdtos.UserPublicDto
 
