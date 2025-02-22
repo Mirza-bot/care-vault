@@ -1,26 +1,21 @@
 services:
   backend:
+    container_name: backend_service
     build:
       context: ./backend
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/swagger/doc.json"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
     volumes:
       - ./backend:/app
     env_file:
       - ./.env
     depends_on: 
       - postgres
-    container_name: backend_service
 
   postgres:
-    image: postgres:latest
     container_name: pg_database
+    image: postgres:latest
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
@@ -30,19 +25,18 @@ services:
     volumes:
       - pgdata:/var/lib/postgresql/data  # Persist data even after container restarts
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    ports:
-      - "4200:4200"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
-    depends_on:
-      backend:
-        condition: service_healthy
-    container_name: frontend_service
+  # frontend:
+  #   container_name: frontend_service
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - ./frontend:/app
+  #     - /app/node_modules
+  #   depends_on:
+  #     - backend
 
 volumes:
   pgdata:
