@@ -5,6 +5,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/swagger/doc.json"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     volumes:
       - ./backend:/app
     env_file:
@@ -35,7 +40,8 @@ services:
       - ./frontend:/app
       - /app/node_modules
     depends_on:
-      - backend
+      backend:
+        condition: service_healthy
     container_name: frontend_service
 
 volumes:

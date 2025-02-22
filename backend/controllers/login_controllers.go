@@ -62,7 +62,8 @@ func Register(c *gin.Context) {
     }
 
     user := models.User{
-        Name: userDto.Name,
+        FirstName: userDto.FirstName,
+        LastName: userDto.LastName,
         Email: userDto.Email,
         Password: hashedPassword,
         Created: time.Now(),

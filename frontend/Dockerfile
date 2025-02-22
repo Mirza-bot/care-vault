@@ -9,7 +9,7 @@ COPY package.json package-lock.json ./
 RUN npm install
 
 # # Generate OpenApi files
-# RUN openapi-typescript-codegen --input http://backend:8080/swagger/doc.json --output ./src/app/api
+RUN openapi-typescript-codegen --input http://localhost:8080/swagger/doc.json --output ./src/app/api
 
 # Copy the entire Angular app into the container
 COPY . .

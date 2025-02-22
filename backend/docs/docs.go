@@ -66,6 +66,44 @@ const docTemplate = `{
                         }
                     }
                 }
+            },
+            "patch": {
+                "description": "Modify user user data by providing new data and the user-ID.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "Modify a user.",
+                "parameters": [
+                    {
+                        "description": "User data",
+                        "name": "user",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/care-vault_dtos_user_dtos.UserModifyDto"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User successfully modified.",
+                        "schema": {
+                            "$ref": "#/definitions/models.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid ID format"
+                    },
+                    "404": {
+                        "description": "Database query failed"
+                    }
+                }
             }
         },
         "/user/{id}": {
@@ -108,6 +146,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "care-vault_dtos_user_dtos.UserModifyDto": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "firstName": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "isAccount": {
+                    "type": "boolean"
+                },
+                "lastName": {
+                    "type": "string"
+                }
+            }
+        },
         "care-vault_dtos_user_dtos.UserPublicDto": {
             "type": "object",
             "properties": {
@@ -137,10 +195,13 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "firstName": {
+                    "type": "string"
+                },
                 "id": {
                     "type": "integer"
                 },
-                "name": {
+                "lastName": {
                     "type": "string"
                 },
                 "role": {

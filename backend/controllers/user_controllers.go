@@ -73,13 +73,18 @@ func CreateUser(c *gin.Context) {
         return
     }
 
-    if userDto.Name == "" {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "A name is required"})
+    if userDto.FirstName == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "A firstname is required."})
+        return
+    }
+
+    if userDto.LastName == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "A lastname ist required."})
         return
     }
 
     user := models.User{
-        Name: userDto.Name,
+        FirstName: userDto.FirstName,
         Email: userDto.Email,
         Created: time.Now(),
     }
@@ -93,6 +98,16 @@ func CreateUser(c *gin.Context) {
 }
 
 
+// @Summary Delete a user.
+// @Description Remove the user from the database by providing the user-ID.
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param   id  path  int  true  "User ID"
+// @Success 200 "User deleted modified."
+// @Failure 400 "Invalid ID format"
+// @Failure 500 "Could not delete user"
+// @Router /user [patch]
 func DeleteUser(c *gin.Context) {
     userID := c.Param("id")
     id, err := strconv.Atoi(userID)
@@ -109,6 +124,17 @@ func DeleteUser(c *gin.Context) {
 }
 
 
+// @Summary Modify a user.
+// @Description Modify user user data by providing new data and the user-ID.
+// @Tags user
+// @Accept  json
+// @Produce  json
+// @Param   user  body  userdtos.UserModifyDto  true  "User data"
+// @Success 200 {object} models.User "User successfully modified."
+// @Failure 400 "Invalid ID format"
+// @Failure 404 "User not found"
+// @Failure 404 "Database query failed"
+// @Router /user [patch]
 func ModifyUser(c *gin.Context) {
     var userDto userdtos.UserModifyDto
     if err := c.ShouldBindJSON(&userDto); err != nil {
@@ -129,8 +155,13 @@ func ModifyUser(c *gin.Context) {
         return
     }
 
-    if userDto.Name == "" {
-        c.JSON(http.StatusBadRequest, gin.H{"error": "A name is required"})
+    if userDto.FirstName == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "A firstname is required"})
+        return
+    }
+
+    if userDto.LastName == "" {
+        c.JSON(http.StatusBadRequest, gin.H{"error": "A lastname is required"})
         return
     }
 
@@ -139,7 +170,8 @@ func ModifyUser(c *gin.Context) {
         return
     }
 
-    user.Name = userDto.Name
+    user.FirstName = userDto.FirstName
+    user.LastName = userDto.LastName
     user.Email = userDto.Email
 
     if err := db.Model(&user).Updates(user).Error; err != nil {
